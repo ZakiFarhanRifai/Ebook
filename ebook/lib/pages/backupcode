@@ -1,0 +1,97 @@
+import 'package:ebook/components/button.dart';
+import 'package:ebook/components/my_button.dart';
+import 'package:ebook/pages/book_page.dart';
+import 'package:ebook/pages/language_menu.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF14161B),
+      // appBar: AppBar(
+      //   actions: [
+      //     IconButton(
+      //       onPressed: signUserOut,
+      //       icon: Icon(Icons.logout),
+      //     ),
+      //   ],
+      //   title: Text(
+      //     'LOGGED IN!',
+      //     style: GoogleFonts.poppins(fontSize: 20),
+      //   ),
+      // ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('lib/images/book_2.png'),
+            SizedBox(height: 16),
+            Text(
+              'Upload your favorite book and start your journey!',
+              style: GoogleFonts.poppins(color: Colors.white, fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8),
+            Text(
+              'You can upload books in .EPUB format',
+              style:
+                  GoogleFonts.poppins(color: Color(0xFF83899F), fontSize: 14),
+            ),
+            SizedBox(height: 16),
+            MyButton2(
+              text: "Add new .EPUB book",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BookPage()),
+                );
+              },
+            )
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              onPressed: signUserOut,
+              //       icon: Icon(Icons.logout),
+              icon: Icon(Icons.logout),
+            ),
+            IconButton(
+              onPressed: () {
+                // Handle shop action
+              },
+              icon: Icon(Icons.shop),
+            ),
+            IconButton(
+              onPressed: () {
+                // Handle plus action
+              },
+              icon: Icon(Icons.add),
+            ),
+            IconButton(
+              onPressed: () {
+                // Handle profile action
+              },
+              icon: Icon(Icons.person),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

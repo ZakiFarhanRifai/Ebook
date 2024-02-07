@@ -1,0 +1,190 @@
+import 'package:ebook/components/button.dart';
+import 'package:ebook/components/my_button.dart';
+import 'package:ebook/pages/auth_page.dart';
+import 'package:ebook/pages/book_page.dart';
+import 'package:ebook/pages/language_menu.dart';
+import 'package:ebook/pages/profile.dart';
+import 'package:ebook/util/ebook_tile.dart';
+import 'package:ebook/util/ebook_type.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class HomePage extends StatefulWidget {
+  HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final user = FirebaseAuth.instance.currentUser!;
+
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => AuthPage()));
+  }
+
+  //list of coffe types
+  final List ebookType = [
+    [
+      'All',
+      true,
+    ],
+    [
+      'Romance',
+      false,
+    ],
+    [
+      'Hororr',
+      false,
+    ],
+    [
+      'adventure',
+      false,
+    ],
+  ];
+  // user tapped on coffe types
+  void ebookTypeSelected(int index) {
+    setState(() {
+      // this for loop makes every selection false
+      for (int i = 0; i < ebookType.length; i++) {
+        ebookType[i][1] = false;
+      }
+      ebookType[index][1] = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          // Change BackButton to IconButton
+          onPressed: signUserOut,
+          icon: Icon(Icons.notifications), // Change the icon to notifications
+          color: Colors.white,
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: IconButton(
+              onPressed: () {
+                // Add the desired functionality when the person icon is pressed
+                // For example, navigate to the user profile page
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
+              },
+              icon: Icon(Icons.person),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_shopping_cart),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: IconButton(
+              onPressed: signUserOut, // Add onPressed for logout
+              icon: Icon(Icons.logout),
+            ),
+            label: '',
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // find the best coffee for you
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Text(
+              "Find the best book for you",
+              style: GoogleFonts.bebasNeue(
+                fontSize: 56,
+              ),
+            ),
+          ),
+
+          SizedBox(height: 4),
+
+          // search bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Find your booook...',
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade600),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade600),
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 4),
+          // horizontal listview of coffe types
+          // horizontal listview of coffe types
+          Container(
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: ebookType.length, // Fix the typo here
+              itemBuilder: (context, index) {
+                return EbookType(
+                  ebookType: ebookType[index][0],
+                  isSelected: ebookType[index][1],
+                  onTap: () {
+                    ebookTypeSelected(index);
+                  },
+                );
+              },
+            ),
+          ),
+
+          // horizontal list view of coffee tiles
+          Expanded(
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                EbookTile(
+                  ebookImagePath: 'lib/images/harry_potterr.jpeg',
+                  ebookname: 'Hary Potter',
+                  ebookprice: 'free',
+                ),
+                EbookTile(
+                  ebookImagePath: 'lib/images/Sapiens.jpeg',
+                  ebookname: 'Hary Potter',
+                  ebookprice: 'free',
+                ),
+                EbookTile(
+                  ebookImagePath: 'lib/images/sthepen_king.jpeg',
+                  ebookname: 'Hary Potter',
+                  ebookprice: 'free',
+                ),
+                EbookTile(
+                  ebookImagePath: 'lib/images/The_lands.jpeg',
+                  ebookname: 'Hary Potter',
+                  ebookprice: 'free',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
